@@ -154,6 +154,7 @@
   .orc{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:26px 32px}
   .orc .f{display:flex;flex-direction:column;gap:6px;min-width:0}
   .orc .wide{grid-column:1/-1}
+  .orc .hide{display:none}
   .orc label{font-family:var(--sans);font-size:12px;letter-spacing:.28em;text-transform:uppercase;color:var(--ouro)}
   .orc input,.orc select,.orc textarea{
     font-family:var(--serif);font-size:20px;color:var(--creme);background:transparent;
@@ -532,7 +533,9 @@
             <option>Quarteto</option>
             <option>Duo (piano e sax ou flauta)</option>
             <option>Ainda não sei</option>
+            <option value="outra">Outra (sugerir)</option>
           </select></div>
+        <div class="f hide" id="f-form-outra-box"><label for="f-form-outra">Qual formação você imagina?</label><input id="f-form-outra" name="formacao_outra" type="text" placeholder="Ex.: trio sem bateria, sax e violão…"><small class="err"></small></div>
         <div class="f"><label for="f-som">O local tem som?</label>
           <select id="f-som" name="som">
             <option>Não sei</option>
@@ -589,12 +592,15 @@
       L.push('Apresentação: '+v('f-tipo'));
       L.push('Data: '+fmtData(v('f-data'))+(v('f-hora')?' às '+v('f-hora'):''));
       L.push('Local: '+v('f-local'));
-      L.push('Formação: '+v('f-form'));
+      L.push('Formação: '+(v('f-form')==='outra' ? 'outra — '+(v('f-form-outra')||'a combinar') : v('f-form')));
       L.push('O local tem som: '+v('f-som'));
       if(v('f-conv')) L.push('Convidados: '+Math.round(+v('f-conv')));
       if(v('f-obs')) L.push('', v('f-obs'));
       return L.join('\n');
     }
+    var fo=document.getElementById('f-form'), fob=document.getElementById('f-form-outra-box');
+    function toggleOutra(){ var on=fo.value==='outra'; fob.classList.toggle('hide',!on); if(on){ document.getElementById('f-form-outra').focus(); } }
+    fo.addEventListener('change',toggleOutra);
     function update(){ a.href='https://wa.me/'+NUM+'?text='+encodeURIComponent(msg()); }
     var req={'f-nome':'Escreva seu nome.','f-tipo':'Escolha o tipo de apresentação.','f-data':'Escolha a data.','f-local':'Diga o lugar e o bairro ou cidade.'};
     function clear(el){ var box=el.closest('.f'); box.classList.remove('bad'); var e=box.querySelector('.err'); if(e) e.textContent=''; gerr.textContent=''; }
