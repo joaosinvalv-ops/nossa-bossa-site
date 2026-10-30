@@ -154,7 +154,6 @@
   .orc{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:26px 32px}
   .orc .f{display:flex;flex-direction:column;gap:6px;min-width:0}
   .orc .wide{grid-column:1/-1}
-  .orc .hide{display:none}
   .orc label{font-family:var(--sans);font-size:12px;letter-spacing:.28em;text-transform:uppercase;color:var(--ouro)}
   .orc input,.orc select,.orc textarea{
     font-family:var(--serif);font-size:20px;color:var(--creme);background:transparent;
@@ -412,7 +411,7 @@
           <p>Entrada da noiva com arranjo próprio — inclusive a música que vocês escolherem — e um coquetel com bossa, choro, jazz e pop.</p>
         </article>
       </div>
-      <p class="formatos-nota"><span class="label gold">Som</span> Se o espaço não tiver estrutura de som, a gente providencia. É só avisar no pedido de orçamento.</p>
+      <p class="formatos-nota"><span class="label gold">Som</span> Se o espaço não tiver estrutura de som, a gente providencia.</p>
     </div>
   </section>
 
@@ -511,39 +510,20 @@
     <div class="wrap">
       <div class="head sec-head" style="margin-bottom:0">
         <h2 class="title">vamos conversar?</h2>
-        <p>Conta pra gente sobre o evento. A mensagem já chega pronta no WhatsApp da produção.</p>
+        <p>Conta pra gente sobre o evento e a conversa continua pelo WhatsApp.</p>
       </div>
       <form class="orc" id="orc" novalidate>
         <div class="f"><label for="f-nome">Seu nome</label><input id="f-nome" name="nome" type="text" autocomplete="name" placeholder="Como podemos te chamar" required><small class="err"></small></div>
-        <div class="f"><label for="f-tipo">Tipo de apresentação</label>
+        <div class="f"><label for="f-tipo">Tipo de evento</label>
           <select id="f-tipo" name="tipo" required>
             <option value="">Escolha uma opção</option>
-            <option>Restaurante ou hotel, temporada fixa</option>
-            <option>Restaurante, bar ou hotel, noite avulsa</option>
+            <option>Restaurante ou hotel</option>
             <option>Evento corporativo</option>
-            <option>Casamento, só cerimônia</option>
-            <option>Casamento, cerimônia e coquetel</option>
+            <option>Casamento</option>
             <option>Outro</option>
           </select><small class="err"></small></div>
-        <div class="f"><label for="f-data">Data</label><input id="f-data" name="data" type="date" required><small class="err"></small></div>
-        <div class="f"><label for="f-hora">Horário</label><input id="f-hora" name="hora" type="time"><small class="err"></small></div>
-        <div class="f wide"><label for="f-local">Local</label><input id="f-local" name="local" type="text" placeholder="Nome do lugar e bairro ou cidade" required><small class="err"></small></div>
-        <div class="f"><label for="f-form">Formação</label>
-          <select id="f-form" name="formacao">
-            <option>Quarteto</option>
-            <option>Duo (piano e sax ou flauta)</option>
-            <option>Ainda não sei</option>
-            <option value="outra">Outra (sugerir)</option>
-          </select></div>
-        <div class="f hide" id="f-form-outra-box"><label for="f-form-outra">Qual formação você imagina?</label><input id="f-form-outra" name="formacao_outra" type="text" placeholder="Ex.: trio sem bateria, sax e violão…"><small class="err"></small></div>
-        <div class="f"><label for="f-som">O local tem som?</label>
-          <select id="f-som" name="som">
-            <option>Não sei</option>
-            <option>Sim</option>
-            <option>Não</option>
-          </select></div>
-        <div class="f"><label for="f-conv">Convidados (aprox.)</label><input id="f-conv" name="convidados" type="number" min="1" step="1" inputmode="numeric" placeholder="Opcional"></div>
-        <div class="f wide"><label for="f-obs">Algo mais?</label><textarea id="f-obs" name="obs" rows="3" placeholder="Músicas especiais, horários, o que for importante"></textarea></div>
+        <div class="f"><label for="f-data">Data (se já tiver)</label><input id="f-data" name="data" type="date"><small class="err"></small></div>
+        <div class="f wide"><label for="f-obs">Quer contar mais alguma coisa?</label><textarea id="f-obs" name="obs" rows="3" placeholder="Opcional"></textarea></div>
         <div class="f wide actions">
           <a class="btn gold-fill" id="orc-send" href="https://wa.me/5524999342726" target="_blank" rel="noopener">Enviar pelo WhatsApp →</a>
           <small class="err" id="orc-err"></small>
@@ -589,20 +569,13 @@
     function msg(){
       var L=['Olá! Vim pelo site do Nossa Bossa e gostaria de um orçamento.',''];
       L.push('Nome: '+v('f-nome'));
-      L.push('Apresentação: '+v('f-tipo'));
-      L.push('Data: '+fmtData(v('f-data'))+(v('f-hora')?' às '+v('f-hora'):''));
-      L.push('Local: '+v('f-local'));
-      L.push('Formação: '+(v('f-form')==='outra' ? 'outra — '+(v('f-form-outra')||'a combinar') : v('f-form')));
-      L.push('O local tem som: '+v('f-som'));
-      if(v('f-conv')) L.push('Convidados: '+Math.round(+v('f-conv')));
+      L.push('Evento: '+v('f-tipo'));
+      if(v('f-data')) L.push('Data: '+fmtData(v('f-data')));
       if(v('f-obs')) L.push('', v('f-obs'));
       return L.join('\n');
     }
-    var fo=document.getElementById('f-form'), fob=document.getElementById('f-form-outra-box');
-    function toggleOutra(){ var on=fo.value==='outra'; fob.classList.toggle('hide',!on); if(on){ document.getElementById('f-form-outra').focus(); } }
-    fo.addEventListener('change',toggleOutra);
     function update(){ a.href='https://wa.me/'+NUM+'?text='+encodeURIComponent(msg()); }
-    var req={'f-nome':'Escreva seu nome.','f-tipo':'Escolha o tipo de apresentação.','f-data':'Escolha a data.','f-local':'Diga o lugar e o bairro ou cidade.'};
+    var req={'f-nome':'Escreva seu nome.','f-tipo':'Escolha o tipo de evento.'};
     function clear(el){ var box=el.closest('.f'); box.classList.remove('bad'); var e=box.querySelector('.err'); if(e) e.textContent=''; gerr.textContent=''; }
     f.addEventListener('input',function(e){ clear(e.target); update(); });
     f.addEventListener('change',function(e){ clear(e.target); update(); });
